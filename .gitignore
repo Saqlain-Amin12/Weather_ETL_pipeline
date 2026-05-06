@@ -1,0 +1,24 @@
+# Virtual Environment
+env/
+venv/
+ENV/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Secrets & Environment Variables
+.env
+
+# Airflow & Logs
+logs/
+airflow.db
+unittests.cfg
+
+# Docker
+.docker/
+
+# OS files
+.DS_Store
+Thumbs.db
