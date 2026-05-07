@@ -3,3 +3,5 @@ mysql-connector-python
 pandas
 python-dotenv
 requests
+apache-airflow-providers-mysql
+mysqlclient

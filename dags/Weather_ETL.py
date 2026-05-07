@@ -14,44 +14,31 @@ import requests
 )
 def Weather_ETL():
 
-    @task.python
+    @task
     def extract_data_api():
         api_key = Variable.get("OPENWEATHERMAP_API_KEY")
         city_name = "Lahore"
         url = f"http://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={api_key}&units=metric"
 
-        try:
+        response = requests.get(url)
+        response.raise_for_status()
+        return response.json()
 
-            response = requests.get(url)
-            if response.status_code == 200:
-                return response.json()
-            else:
-                raise Exception(f"API failed: {response.status_code}")
-        except Exception as e:
-            print(f"Error fetching data: {e}")
-            return None    
-
-    @task.python
+    @task
     def transform_data(data, **kwargs):
-        if data is None:
+        if not data:
             raise ValueError("No data received!")
         
-        execution_date = kwargs['ds']
-        
-        transformed= {
+        return {
             'city': data['name'],
             'min_temp': data['main']['temp_min'],
             'max_temp': data['main']['temp_max'],
             'humidity': data['main']['humidity'],
-            'execution_date': execution_date
+            'execution_date': kwargs['ds']
         }
-        return transformed  
 
-    @task.python
+    @task
     def load_data(transformed):
-        if transformed is None:
-            raise ValueError("No data to load!")
-        
         mysql_hook = MySqlHook(mysql_conn_id='mysql_local')
         
         sql = """
@@ -70,8 +57,6 @@ def Weather_ETL():
             transformed['humidity'],
             transformed['execution_date']
         ))
-        
-        print(f" Data loaded for {transformed['city']}!")
 
     extracted = extract_data_api()
     transformed = transform_data(extracted)
