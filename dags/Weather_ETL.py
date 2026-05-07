@@ -7,8 +7,8 @@ import requests
 
 @dag(
     dag_id="Weather_ETL",
-    schedule=CronDataIntervalTimetable("0 17 * * *", timezone="Asia/Karachi"),
-    start_date=datetime(2026, 6, 5),
+    schedule=CronDataIntervalTimetable("0 18 * * *", timezone="Asia/Karachi"),
+    start_date=datetime(2026, 5, 5),
     end_date=datetime(2026, 6, 30),
     catchup=True,
 )
